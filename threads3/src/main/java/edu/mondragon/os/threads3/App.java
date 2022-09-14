@@ -1,0 +1,25 @@
+package edu.mondragon.os.threads3;
+
+/**
+ * threads3
+ *
+ */
+public class App {
+    static final int MAXTHREADS = 10;
+
+    public static void main(String[] args) {
+
+        CounterThread threadList[] = new CounterThread[MAXTHREADS];
+
+        for (int i = 0; i < MAXTHREADS; i++) {
+            threadList[i] = new CounterThread(i + 1);
+        }
+        System.out.println("Start counting: ");
+
+        for (int i = 0; i < MAXTHREADS; i++) {
+            threadList[i].start();
+        }
+
+        System.out.println("goodbye");
+    }
+}
