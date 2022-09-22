@@ -6,13 +6,17 @@ import java.util.List;
 public class Buffer {
 
     List<Integer> list;
-
+    int size=10;
     public Buffer() {
         this.list = new ArrayList<Integer>();
+        
     }
 
     public void add(int item) throws InterruptedException {
-        this.list.add(item);
+        if(list.size() < size) {
+            list.add(item);
+        }
+
     }
 
     public int remove() throws InterruptedException {
