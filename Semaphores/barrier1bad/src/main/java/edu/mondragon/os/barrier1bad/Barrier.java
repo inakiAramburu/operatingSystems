@@ -26,10 +26,11 @@ public class Barrier {
             this.mutex.release();
         } else {
             this.mutex.acquire();
-            System.out.println("crossing door");
+           
             this.mutex.release();
         }
-       
+
+        
         
         
 
