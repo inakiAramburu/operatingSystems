@@ -21,7 +21,7 @@ public class Producer extends Thread {
         while (!this.isInterrupted()) {
             item = rand.nextInt(50);
             try {
-                buffer.add(item);
+                buffer.add(rand.nextInt(50));
             } catch (InterruptedException e) {
                 this.interrupt();
             }

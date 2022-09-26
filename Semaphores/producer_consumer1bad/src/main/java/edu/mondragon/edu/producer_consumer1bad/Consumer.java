@@ -12,18 +12,13 @@ public class Consumer extends Thread {
     @Override
     public void run() {
 
-        int item;
         boolean end = false;
 
         while (!end || buffer.isNotEmpty()) {
             try {
-                if(buffer.s) {
-                    item = buffer.remove();
-                    System.out.println("<" + item);
-                }else{
-                    end = true;
+                    buffer.remove();
                 }
-            } catch (InterruptedException e) {
+            catch (InterruptedException e) {
                 end = true;
             }
         }

@@ -1,0 +1,24 @@
+package edu.mondragon.os.readers_writers1bad;
+
+public class Reader extends Thread {
+
+    private Buffer buffer;
+
+    public Reader(Buffer buffer, int id) {
+        super("Reader " + id);
+        this.buffer = buffer;
+    }
+
+    @Override
+    public void run() {
+
+        while (!this.isInterrupted()) {
+            try {
+                buffer.read(this.getName());
+            } catch (InterruptedException e) {
+                this.interrupt();
+            }
+        }
+    }
+
+}
