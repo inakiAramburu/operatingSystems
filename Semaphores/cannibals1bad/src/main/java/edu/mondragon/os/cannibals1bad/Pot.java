@@ -17,10 +17,29 @@ public class Pot {
     }
 
     public void getPortion(String name) throws InterruptedException {
-        System.out.println(name + "takes a portion");
+        
+        mutex.acquire();
+
+        if (portions == 0) {
+            emptyPot.release();
+            fullPot.acquire();
+        }
+            System.out.println(name + "takes a portion");
+            portions--;
+        
+        mutex.release();
+
+        
     }
 
     public void putPortions(int numPortions) throws InterruptedException {
+        emptyPot.acquire();
+        
+        if (portions == 0) {
+            portions = numPortions;
+        }
+        fullPot.release(); //esta llena
+    
         System.out.println("cook cooks " + numPortions + " new portions");
     }
 
