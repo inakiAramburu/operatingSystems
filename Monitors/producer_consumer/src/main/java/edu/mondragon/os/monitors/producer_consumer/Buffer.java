@@ -32,7 +32,7 @@ public class Buffer {
             }
             list.add(item);
             System.out.println(">  " + item);
-            c2.signal();
+            c2.signalAll();
         } finally {
             lock.unlock();
         }
@@ -54,7 +54,7 @@ public class Buffer {
             }
             item = list.remove(0);
             System.out.println(" < " + item);
-            c1.signal();
+            c1.signalAll();
         } finally {
             lock.unlock();
         }
