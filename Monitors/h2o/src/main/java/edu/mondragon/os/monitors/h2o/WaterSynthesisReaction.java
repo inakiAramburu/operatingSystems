@@ -23,15 +23,26 @@ public class WaterSynthesisReaction {
     }
 
     // TODO: modify this function
-    public void addOxygen(String name) throws InterruptedException {
+    public synchronized void addOxygen(String name) throws InterruptedException {
 
         System.out.println(name + ": reacting");
+
+        mutex.lock();
+        try {
+            while(nO2==2){
+                oxyQueue.await();
+            }
+            nO2++;
+        } finally {
+            mutex.unlock();
+        }
+        barrier.waitBarrier();
 
         showProducts();
     }
 
     // TODO: modify this function
-    public void addHydrogen(String name) throws InterruptedException {
+    public synchronized void addHydrogen(String name) throws InterruptedException {
 
         System.out.println(name + ": reacting");
 
