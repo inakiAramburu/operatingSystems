@@ -22,44 +22,64 @@ public class WaterSynthesisReaction {
         oxyQueue = mutex.newCondition();
     }
 
-    // TODO: modify this function
-    public synchronized void addOxygen(String name) throws InterruptedException {
-
-        System.out.println(name + ": reacting");
+    public void addOxygen(String name) throws InterruptedException {
 
         mutex.lock();
         try {
-            while(nO2==1){
+            while (nO2 == 1) {
                 oxyQueue.await();
             }
             nO2++;
         } finally {
             mutex.unlock();
         }
+
         barrier.waitBarrier();
+
         System.out.println(name + ": reacting");
-        showProducts();
-    }
-
-    // TODO: modify this function
-    public synchronized void addHydrogen(String name) throws InterruptedException {
-
-
 
         mutex.lock();
         try {
-            while(nH2==2){
-                oxyQueue.await();
+            nO2--;
+            oxyQueue.signal();
+            nDone++;
+            if (nDone == 3) {
+                showProducts();
+                nDone = 0;
+            }
+        } finally {
+            mutex.unlock();
+        }
+    }
+
+    public void addHydrogen(String name) throws InterruptedException {
+
+        mutex.lock();
+        try {
+            while (nH2 == 2) {
+                hydroQueue.await();
             }
             nH2++;
         } finally {
             mutex.unlock();
         }
+
         barrier.waitBarrier();
 
         System.out.println(name + ": reacting");
 
-        showProducts();
+        mutex.lock();
+        try {
+            nH2--;
+            hydroQueue.signal();
+            nDone++;
+            if (nDone == 3) {
+                showProducts();
+                nDone = 0;
+            }
+        } finally {
+            mutex.unlock();
+        }
     }
 
     private void showProducts() {
