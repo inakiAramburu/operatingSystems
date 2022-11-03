@@ -4,9 +4,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>edu.mondragon.os.monitors.senate_bus</groupId>
-  <artifactId>monitors_senate_bus</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <groupId>edu.mondragon.os.monitors.barbershop</groupId>
+  <artifactId>monitors_barbershop</artifactId>
+  <version>0.1-SNAPSHOT</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,7 +39,7 @@
           <configuration>
             <archive>
               <manifest>
-                <mainClass>edu.mondragon.os.monitors.senate_bus.App</mainClass>
+                <mainClass>edu.mondragon.os.monitors.barbershop.App</mainClass>
               </manifest>
             </archive>
           </configuration>

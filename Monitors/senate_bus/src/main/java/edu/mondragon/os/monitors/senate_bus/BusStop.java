@@ -22,22 +22,48 @@ public class BusStop {
         this.numWaiting = 0;
     }
 
-    // TODO: modify this function
     public void getRiders(String name) throws InterruptedException {
+
         System.out.println(name + ": arrive");
-        if (numWaiting > 0) {
-            System.out.println(name + ": stopped");
+        mutex.lock();
+        try {
+            if (numWaiting > 0) {
+                System.out.println(name + ": stopped");
+                are_boarding = true;
+                bus.signalAll();
+                while (are_boarding)
+                    allAboard.await();
+            }
+            System.out.println(name + ": depart");
+        } finally {
+            mutex.unlock();
         }
-        System.out.println(name + ": depart");
     }
 
-    // TODO: modify this function
     public void getIn(String name) throws InterruptedException {
+
         System.out.println(name + ": arrive");
+        mutex.lock();
+        try {
+            while (are_boarding) {
+                boarding.await();
+            }
+            numWaiting++;
 
-        System.out.println(name + ": wait");
-
-        System.out.println(name + ": boarding");
-        Thread.sleep(100);
+            System.out.println(name + ": wait");
+            while (!are_boarding) {
+                bus.await();
+            }
+            System.out.println(name + ": boarding");
+            Thread.sleep(100);
+            numWaiting--;
+            if (numWaiting == 0) {
+                are_boarding = false;
+                boarding.signalAll();
+                allAboard.signal();
+            }
+        } finally {
+            mutex.unlock();
+        }
     }
 }
