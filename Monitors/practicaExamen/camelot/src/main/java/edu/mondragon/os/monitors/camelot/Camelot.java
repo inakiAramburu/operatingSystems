@@ -15,12 +15,12 @@ public class Camelot {
     private boolean kingIsRequiredByCitizens, kingIsRequiredByKnights;
     private Condition kingRest;
     private boolean fullAudience;
+    private boolean fullKnights;
     private Condition citizensQueue;
     private boolean kingReadyForAudience, kingReadyForHaunting;
     private Condition audienceQueue, hauntingQueue;
     private boolean kingIsGivingAudience, kingIsHunting;
     private Condition kingAudience, kingHunting;
-    private ReusableBarrier knightsBarrier;
 
     public Camelot() {
         numCitizens = 0;
@@ -30,6 +30,7 @@ public class Camelot {
         kingIsRequiredByKnights = false;
         kingRest = mutex.newCondition();
         fullAudience = false;
+        fullKnights = false;
         citizensQueue = mutex.newCondition();
         kingReadyForAudience = false;
         kingReadyForHaunting = false;
@@ -39,88 +40,131 @@ public class Camelot {
         kingIsHunting = false;
         kingAudience = mutex.newCondition();
         kingHunting = mutex.newCondition();
-        knightsBarrier = new ReusableBarrier(NUM_KNIGHTS);
     }
 
     public void askKingAudience() throws InterruptedException {
 
         // TODO: your code goes here
+        mutex.lock();
         try {
-            mutex.lock();
             while (fullAudience) {
                 citizensQueue.await();
             }
             numCitizens++;
             if (numCitizens == 3) {
+                kingIsRequiredByCitizens = true;
                 fullAudience = true;
+                kingRest.signal();
             }
         } finally {
             mutex.unlock();
         }
-
     }
 
     public void waitingForAudience() throws InterruptedException {
 
         // TODO: your code goes here
-
+        mutex.lock();
         try {
-            mutex.lock();
+            while (!kingReadyForAudience) {
 
-            while (!fullAudience) {
-                citizensQueue.await();
+                audienceQueue.await();
             }
-
-            citizensQueue.signalAll();
-
         } finally {
             mutex.unlock();
         }
-
     }
 
     public void citizenGoes() {
 
-        // TODO: your code goes here
-
+        // TODO: your code goes hereç
         mutex.lock();
         try {
-            mutex.lock();
-            if (fullAudience) {
-                kingIsRequiredByCitizens = true;
-                citizensQueue.signalAll();
-            }
             numCitizens--;
             if (numCitizens == 0) {
-                fullAudience = false;
                 kingIsRequiredByCitizens = false;
-                citizensQueue.signalAll();
+                kingIsGivingAudience = false;
+                fullAudience = false;
+                kingAudience.signal();
             }
         } finally {
             mutex.unlock();
         }
-
     }
 
     public void knightComesBack(String name) throws InterruptedException {
 
         // TODO: your code goes here
+        mutex.lock();
+        try {
+            while (fullKnights) {
+                hauntingQueue.await();
+            }
+            numKnights++;
+            if (numKnights == 4) {
+                fullKnights = true;
+                kingIsRequiredByKnights = true;
+                kingRest.signal();
+            }
+        } finally {
+            mutex.unlock();
+        }
     }
 
     public void waitingForHaunting() throws InterruptedException {
 
         // TODO: your code goes here
-
+        mutex.lock();
+        try {
+            while (!kingReadyForHaunting) {
+                hauntingQueue.await();
+            }
+        } finally {
+            mutex.unlock();
+        }
     }
 
-    public void knightGoes() throws InterruptedException {
+    public void knightGoes() {
 
         // TODO: your code goes here
+        mutex.lock();
+        try {
+            numKnights--;
+            if (numKnights == 0) {
+                kingIsRequiredByKnights = false;
+                fullKnights = false;
+                kingIsHunting = false;
+                kingHunting.signal();
+            }
+        } finally {
+            mutex.unlock();
+        }
     }
 
     public void KingsStay(String name) throws InterruptedException {
 
         // TODO: your code goes here
+        mutex.lock();
+        try {
+            while (!kingIsRequiredByCitizens || !kingIsRequiredByCitizens) {
+                kingRest.await();
+            }
+            if (kingIsRequiredByKnights) {
+                kingReadyForHaunting = true;
+                hauntingQueue.signalAll();
+                while (kingIsHunting) {
+                    kingHunting.await();
+                }
+            } else if (kingIsRequiredByCitizens) {
+                kingReadyForAudience = true;
+                audienceQueue.signalAll();
+                while (kingIsGivingAudience) {
+                    kingAudience.await();
+                }
+                citizensQueue.signalAll();
+            }
+        } finally {
+            mutex.unlock();
+        }
     }
-
 }
