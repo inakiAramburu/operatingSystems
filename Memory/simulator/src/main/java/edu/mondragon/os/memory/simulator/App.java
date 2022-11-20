@@ -19,8 +19,10 @@ public class App {
 
         try {
             for (int i = 0; i < NUM_PROGRAMS; i++) {
-                Program program = new Program((char) (i + 65), os);
-                os.startProgram(program);
+                Program program = new Program((char) (i + 65), os); // Asigna una letra a cada programa (Program id) y
+                                                                    // pasa la referencia a objeto del sistema operativo
+                os.startProgram(program); // Inizializa cada programa lo incluye en una lista de programas y en el
+                                          // memoryManager
                 Thread.sleep(rand.nextInt(1000));
             }
             Thread.sleep(rand.nextInt(10000));

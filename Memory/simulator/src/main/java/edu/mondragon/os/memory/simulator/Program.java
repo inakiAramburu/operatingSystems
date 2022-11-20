@@ -9,7 +9,7 @@ public class Program extends Thread {
     private char pid;
     private API api;
 
-    public Program(char pid, API api) {
+    public Program(char pid, API api) { // operating system pasa a ser api e implementa la intefaz
 
         super("Program " + pid);
         this.pid = pid;
@@ -54,6 +54,10 @@ public class Program extends Thread {
 
     public char getPid() {
         return pid;
+    }
+
+    public void setPid(char let) {
+        this.pid = let;
     }
 
     public Section[] getSections() {

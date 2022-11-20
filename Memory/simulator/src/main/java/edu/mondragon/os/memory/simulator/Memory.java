@@ -56,6 +56,7 @@ public class Memory {
         blocks.add(gapPos, new OwnedBlock(
                 newBlock.start(),
                 newBlock.end(),
+
                 owner));
 
         try {
